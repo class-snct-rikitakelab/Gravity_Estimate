@@ -19,7 +19,7 @@
 //debug
 #include <pcl/visualization/pcl_visualizer.h>
 
-#define LEAF_SIZE   0.03  //Voxle Grid Filter
+#define LEAF_SIZE   0.03  //Voxel Grid Filter
 #define DISTANCE_TH 0.035 //Plane segmentation coef
 #define NORM_RADIUS 1.0   //normal estimation searching radius
 
@@ -103,6 +103,8 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input) {
   norm.setRadiusSearch(NORM_RADIUS);
 
   norm.compute(*norm_out);
+
+  ROS_INFO("o: %d, f:, %d, p: %d, n:%d", pcl_in->points.size(), vg_filtered->points.size(), plane->points.size(), norm_out->points.size());
 
   ///////////////
   // Publish the data
