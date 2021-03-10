@@ -23,14 +23,17 @@
 #define DISTANCE_TH 0.035 //Plane segmentation coef
 #define NORM_RADIUS 1.0   //normal estimation searching radius
 
+//#define DO_PCL_VISUALIZATION //PCL Visualizer toggle
+
 //ros publisher
 ros::Publisher pub;
 ros::Publisher pub2;
 ros::Publisher pub3;
 
 //pcl visualizer
+#ifdef DO_PCL_VISUALIZATION
 pcl::visualization::PCLVisualizer viewer{"pcl_normals"};
-
+#endif
 
 void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input) {
   pcl::PointCloud<pcl::PointXYZ> pcl_out; //output from pcl
@@ -113,6 +116,7 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input) {
 
   ///////////////
   // PCL Visualizer
+#ifdef DO_PCL_VISUALIZATION
   viewer.removeAllPointClouds();
 
   viewer.addPointCloud(plane, "plane");
@@ -124,6 +128,7 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input) {
   viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "normal");
 
   viewer.spinOnce();
+#endif
 }
 
 
@@ -132,8 +137,11 @@ int main (int argc, char** argv) {
   ros::init (argc, argv, "gravity_estimate");
   ros::NodeHandle nh;
 
+  //PCL visualizer
+#ifdef DO_PCL_VISUALIZATION
   viewer.setBackgroundColor(1,1,1);
   viewer.addCoordinateSystem(0.5, "axis");
+#endif
 
   // Create a ROS subscriber for the input point cloud
   ros::Subscriber sub = nh.subscribe ("input", 1, cloud_cb);
